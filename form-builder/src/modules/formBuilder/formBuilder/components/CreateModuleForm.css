@@ -1,0 +1,29 @@
+.create-module-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-error {
+  color: #e74c3c;
+  font-size: 12px;
+}
+
+.form-submit {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+

@@ -1,0 +1,18 @@
+[
+    { "label": "USD", "value": "$", "country_code": "US" },
+    { "label": "EUR", "value": "€", "country_code": "EU" },
+    { "label": "JPY", "value": "¥", "country_code": "JP" },
+    { "label": "GBP", "value": "£", "country_code": "GB" },
+    { "label": "AUD", "value": "A$", "country_code": "AU" },
+    { "label": "CAD", "value": "C$", "country_code": "CA" },
+    { "label": "CHF", "value": "CHF", "country_code": "CH" },
+    { "label": "CNY", "value": "¥", "country_code": "CN" },
+    { "label": "INR", "value": "₹", "country_code": "IN" },
+    { "label": "BRL", "value": "R$", "country_code": "BR" },
+    { "label": "RUB", "value": "₽", "country_code": "RU" },
+    { "label": "ZAR", "value": "R", "country_code": "ZA" },
+    { "label": "KRW", "value": "₩", "country_code": "KR" },
+    { "label": "MXN", "value": "Mex$", "country_code": "MX" },
+    { "label": "SGD", "value": "S$", "country_code": "SG" }
+  ]
+  

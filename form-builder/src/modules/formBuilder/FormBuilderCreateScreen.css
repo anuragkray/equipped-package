@@ -1,0 +1,7 @@
+.form-builder-create-screen {
+  padding: 16px 20px 24px;
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--bg, #ffffff);
+}
+

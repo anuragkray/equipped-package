@@ -1,0 +1,33 @@
+.cancel-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 8px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border, #e0e0e0);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: var(--surface-nav-selected2-color, #308BE0);
+  white-space: nowrap;
+}
+
+.cancel-button:hover:not(:disabled) {
+  opacity: 0.75;
+  background-color: var(--sidebar-selected-bg, #f5f5f5);
+}
+
+.cancel-button:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+.cancel-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+

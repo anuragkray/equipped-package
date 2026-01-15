@@ -1,0 +1,52 @@
+.field-config-dropdown {
+  position: relative;
+}
+
+.field-config-trigger {
+  outline: none;
+  background: transparent;
+  color: var(--text, #2c3e50);
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.field-config-icon {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-brand-primary-color, var(--text, #2c3e50));
+}
+
+.field-config-menu {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  width: 160px;
+  background-color: var(--dropdown-bg, #ffffff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  border: 1px solid var(--dropdown-border, #e0e0e0);
+  z-index: 50;
+}
+
+.field-config-menu ul {
+  list-style: none;
+  padding: 4px 0;
+  margin: 0;
+}
+
+.field-config-item {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text, #2c3e50);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-config-item:hover {
+  background-color: var(--dropdown-hover, #f4f6f9);
+}
+

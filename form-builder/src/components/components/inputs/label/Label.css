@@ -1,0 +1,13 @@
+.form-label {
+  font-size: 14px;
+  color: var(--text-brand-secondary-color, var(--muted, #7f8c8d));
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 4px;
+}
+
+.required-asterisk {
+  color: #e74c3c;
+  margin-left: 2px;
+}
+

@@ -1,0 +1,204 @@
+:root {
+  --rm-surface: var(--surface-color, #ffffff);
+  --rm-surface-strong: var(--surface-strong-color, #f9fafb);
+  --rm-text: var(--text-color, #111827);
+  --rm-muted: var(--muted-color, #6b7280);
+  --rm-border: var(--border-color, #e5e7eb);
+  --rm-primary: var(--primary-color);
+  --rm-primary-contrast: #ffffff;
+  --rm-success: var(--success-color, #16a34a);
+  --rm-danger: var(--danger-color, #dc2626);
+  --rm-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.dark .rule-modal-form,
+[data-theme="dark"] .rule-modal-form {
+  --rm-surface: var(--surface-color-dark, #0f172a);
+  --rm-surface-strong: var(--surface-strong-color-dark, #111827);
+  --rm-text: var(--text-color-dark, #e5e7eb);
+  --rm-muted: var(--muted-color-dark, #9ca3af);
+  --rm-border: var(--border-color-dark, #1f2937);
+  --rm-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.rule-modal-form {
+  width: 100%;
+  padding: 24px;
+  background: var(--rm-surface);
+  color: var(--rm-text);
+}
+
+.rule-modal-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.rule-field {
+  margin-bottom: 16px;
+}
+
+.rule-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--rm-text);
+}
+
+.rule-input,
+.rule-textarea {
+  width: 100%;
+  border: 1px solid var(--rm-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: var(--rm-text);
+  background: transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rule-input:focus,
+.rule-textarea:focus {
+  outline: none;
+  border-color: var(--rm-primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.rule-textarea-wrapper {
+  position: relative;
+}
+
+.rule-textarea {
+  min-height: 180px;
+  line-height: 1.4;
+}
+
+.rule-suggestion-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-top: 6px;
+  background: var(--rm-surface);
+  border: 1px solid var(--rm-border);
+  border-radius: 8px;
+  box-shadow: var(--rm-shadow);
+  z-index: 10000;
+  max-height: 200px;
+  overflow: auto;
+  padding: 6px 0;
+}
+
+.rule-suggestion-list--medium {
+  z-index: 10004;
+}
+
+.rule-suggestion-list--wide {
+  z-index: 10003;
+}
+
+.rule-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--rm-text);
+}
+
+.rule-suggestion-item:hover,
+.rule-suggestion-item.is-active {
+  background: var(--rm-surface-strong);
+  font-weight: 600;
+}
+
+.rule-suggestion-item--code {
+  font-family: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+.rule-suggestion-primary {
+  font-weight: 600;
+}
+
+.rule-suggestion-secondary {
+  color: var(--rm-muted);
+  font-size: 0.9rem;
+}
+
+.rule-suggestion-hint {
+  margin-left: 10px;
+  font-size: 0.75rem;
+  color: var(--rm-muted);
+}
+
+.rule-error {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--rm-danger);
+}
+
+.rule-error-inline {
+  margin-bottom: 8px;
+}
+
+.rule-success {
+  font-size: 0.9rem;
+  color: var(--rm-success);
+}
+
+.rule-actions-inline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.rule-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.rule-btn {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rule-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.rule-btn-primary {
+  background: var(--rm-primary);
+  color: var(--rm-primary-contrast);
+  border-color: var(--rm-primary);
+  min-width: 110px;
+}
+
+.rule-btn-primary:hover:not(:disabled) {
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.rule-btn-secondary {
+  background: var(--rm-surface-strong);
+  color: var(--rm-text);
+  border-color: var(--rm-border);
+}
+
+.rule-btn-secondary:hover:not(:disabled) {
+  border-color: var(--rm-primary);
+  color: var(--rm-primary);
+}
+
+.rule-textarea-wrapper .rule-suggestion-list {
+  font-size: 0.95rem;
+}
