@@ -51,17 +51,48 @@ Publish packages to your registry and install them by version:
 
 Then build and deploy the host app as usual.
 
-## Configuration and auth
+## Configuration, auth, and runtime behavior
 
-- `@equipped/form-builder` expects `apiBaseUrl` and `authToken` props.
-- `@equipped/rule-engine` reads the API base URL from `window.__APP_API_BASE__`
-  (preferred) or `VITE_API_BASE_URL` at build time, and reads tokens from
-  `localStorage` (`accessToken` or `authToken`).
+These packages depend on **headers + authentication** to talk to your API.
+If you do not provide them, the modules will not be able to fetch data.
 
-Set these in the host app, not inside the packages.
+### Form Builder
 
-You can also inject a parent-managed API client into `@equipped/rule-engine`
-via the `apiClient` prop to control auth and headers centrally.
+Two supported modes:
+
+1) **Parent-managed API (recommended)**
+   - Pass `formBuilderApiClient` from the host app.
+   - The client must expose `get`, `post`, `patch`, `put`, `delete` and return
+     the same response shape the package expects (`{ statusCode, data }`).
+   - In this mode the package does **not** set base URL or tokens itself.
+
+2) **Package-managed API (fallback)**
+   - Pass `apiBaseUrl` and `authToken`.
+   - The package writes the token to `localStorage` and uses its internal API client.
+
+If neither is provided, Form Builder renders but API calls will fail.
+
+### Rule Engine
+
+- Optional inside Form Builder. Provide only when needed:
+  - `ruleEngineComponent={RuleEngineModal}`
+- API control:
+  - Parent-managed: pass `ruleEngineApiClient` (same shape as above).
+  - Fallback: package uses `window.__APP_API_BASE__` or `VITE_API_BASE_URL`,
+    and reads `accessToken`/`authToken` from `localStorage`.
+
+If no API client/headers are available, Rule Engine renders but API calls fail.
+
+### When it runs vs. when it does not
+
+- **Runs with API access** when:
+  - `formBuilderApiClient` is provided, or
+  - `apiBaseUrl` + `authToken` are provided, and
+  - Rule Engine is passed when you want that feature.
+
+- **Does not fetch data** when:
+  - No API client and no auth/base URL is provided.
+  - Rule Engine component is not provided (feature hidden).
 
 ## Styling
 
