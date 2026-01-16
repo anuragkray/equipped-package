@@ -1,7 +1,6 @@
 {
   "name": "@equipped/form-builder",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "build": "vite build"
@@ -12,8 +11,7 @@
     ".": {
       "import": "./src/index.jsx",
       "require": "./src/index.jsx"
-    },
-    "./style.css": "./src/style.css"
+    }
   },
   "files": [
     "dist",
@@ -21,6 +19,7 @@
     "README.md"
   ],
   "peerDependencies": {
+    "@equipped/rule-engine": "^0.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1"
@@ -29,10 +28,10 @@
     "@phosphor-icons/react": "^2.1.10",
     "axios": "^1.7.9",
     "react-select": "^5.10.2",
-    "react-toastify": "^10.0.5",
-    "@equipped/rule-engine": "file:../rule-engine"
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
+    "@equipped/rule-engine": "file:../rule-engine",
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.22",
     "postcss": "^8.5.6",

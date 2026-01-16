@@ -1,0 +1,39 @@
+trigger: none
+
+variables:
+  nodeVersion: '20.x'
+  npmFeedUrl: 'https://pkgs.dev.azure.com/<org>/<project>/_packaging/<feed>/npm/registry/'
+
+stages:
+  - stage: Publish
+    displayName: Publish packages
+    jobs:
+      - job: Publish
+        displayName: Publish to Azure Artifacts
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+          - script: |
+              echo "@equipped:registry=$(npmFeedUrl)" > ~/.npmrc
+            displayName: Configure npm registry
+          - script: npm install
+            workingDirectory: form-builder
+            displayName: Install form-builder
+          - script: npm run build
+            workingDirectory: form-builder
+            displayName: Build form-builder
+          - script: npm publish
+            workingDirectory: form-builder
+            displayName: Publish form-builder
+          - script: npm install
+            workingDirectory: rule-engine
+            displayName: Install rule-engine
+          - script: npm run build
+            workingDirectory: rule-engine
+            displayName: Build rule-engine
+          - script: npm publish
+            workingDirectory: rule-engine
+            displayName: Publish rule-engine

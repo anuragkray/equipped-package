@@ -1,0 +1,37 @@
+name: Publish Packages (GitHub Packages)
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        package:
+          - form-builder
+          - rule-engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@equipped'
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ matrix.package }}
+      - name: Build
+        run: npm run build
+        working-directory: ${{ matrix.package }}
+      - name: Publish
+        run: npm publish
+        working-directory: ${{ matrix.package }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

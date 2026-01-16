@@ -1,7 +1,6 @@
 {
   "name": "@equipped/rule-engine",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "build": "vite build"
@@ -12,8 +11,7 @@
     ".": {
       "import": "./src/index.jsx",
       "require": "./src/index.jsx"
-    },
-    "./style.css": "./src/style.css"
+    }
   },
   "files": [
     "dist",
