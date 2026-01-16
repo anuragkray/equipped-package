@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import FormBuilderScreen from './modules/formBuilder/FormBuilderScreen.jsx';
 import FormBuilderCreateScreen from './modules/formBuilder/FormBuilderCreateScreen.jsx';
-import { RuleEngineApiProvider } from './contexts/RuleEngineApiContext.js';
+import { RuleEngineApiProvider } from './contexts/RuleEngineApiContext.jsx';
 
 const normalizePath = (path) => {
   if (!path) return '/form-builder';

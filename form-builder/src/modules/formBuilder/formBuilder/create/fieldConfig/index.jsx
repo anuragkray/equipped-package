@@ -3,7 +3,7 @@ import { DotsThreeVertical, Check } from "@phosphor-icons/react";
 import RuleEngineModal from "@equipped/rule-engine";
 import { getAuthHeaders, getMethodApiCall } from "../../../../../services/apiClient.js";
 import { alertWarning } from "../../../../../utils/alert.jsx";
-import { useRuleEngineApiClient } from "../../../../../contexts/RuleEngineApiContext.js";
+import { useRuleEngineApiClient } from "../../../../../contexts/RuleEngineApiContext.jsx";
 import './FieldConfig.css';
 
 const DropdownMenu = ({ children, trigger }) => {
