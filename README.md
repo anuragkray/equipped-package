@@ -24,17 +24,23 @@ Local file deps example:
 
 Then import and render the components in your app.
 
-## Development mode
+## Development mode (local)
 
-There is no standalone dev app in this repo. Use a host app to render the packages.
+These packages export `src` directly (see `package.json`), so Vite can compile
+them without a prebuild.
 
-Recommended flow:
-
-1. Add the local `file:` dependencies to your host app.
+1. Add local `file:` deps in your host app.
 2. Run `npm install` in the host app.
 3. Start the host app dev server (Vite/React).
 
-Changes in `equipped-package/*/src` will be picked up by the host app.
+Optional: if your host tooling needs built output, run:
+
+```
+npm install --prefix ../equipped-package/rule-engine
+npm run build --prefix ../equipped-package/rule-engine
+npm install --prefix ../equipped-package/form-builder
+npm run build --prefix ../equipped-package/form-builder
+```
 
 ## Production mode
 
@@ -50,6 +56,114 @@ Publish packages to your registry and install them by version:
 ```
 
 Then build and deploy the host app as usual.
+
+## Settings required (local and production)
+
+These packages rely on API base URL, auth tokens, and optional API clients.
+The host app is responsible for providing one of the supported setups.
+
+### API base URL
+
+- Option A: set `VITE_API_BASE_URL` in the host app environment.
+- Option B: set `window.__APP_API_BASE__` before rendering the app.
+- Option C: pass `apiBaseUrl` to `@equipped/form-builder` (it sets the global).
+
+### Auth tokens
+
+- Store tokens in `localStorage` as `accessToken` or `authToken`, or
+- Pass tokens via `@equipped/form-builder` props (`authToken`, `tokenStorageKey`,
+  `secondaryTokenKey`).
+
+### API control
+
+- Recommended: pass `formBuilderApiClient` and `ruleEngineApiClient` from the
+  host app. This gives full control over headers, base URL, and auth.
+- Fallback: let packages use their internal API clients.
+
+### API client shape (host-managed)
+
+Your host app API helpers should follow this structure:
+
+```ts
+getAuthHeaders(): Record<string, string>;
+
+getMethodApiCall(
+  path: string,
+  headers: Record<string, string>,
+  query?: Record<string, string | number | boolean>,
+  options?: { signal?: AbortSignal }
+): Promise<{ statusCode: number; data: any }>;
+
+postMethodApiCall(
+  path: string,
+  headers: Record<string, string>,
+  body?: any,
+  query?: Record<string, string | number | boolean>,
+  options?: { signal?: AbortSignal }
+): Promise<{ statusCode: number; data: any }>;
+
+patchMethodApiCall(
+  path: string,
+  headers: Record<string, string>,
+  body?: any,
+  options?: { signal?: AbortSignal }
+): Promise<{ statusCode: number; data: any }>;
+```
+
+Notes:
+- `getAuthHeaders` must include auth tokens as required by your API.
+- Return shape should include `{ statusCode, data }` (other fields are ignored).
+
+## Host app integration (example)
+
+```jsx
+import FormBuilderModule from '@equipped/form-builder';
+import RuleEngineModule from '@equipped/rule-engine';
+import {
+  getAuthHeaders,
+  getMethodApiCall,
+  postMethodApiCall,
+  patchMethodApiCall,
+  putMethodApiCall,
+  deleteMethodApiCall,
+} from './services/apiClient';
+
+const formBuilderApiClient = {
+  get: (path, options = {}) =>
+    getMethodApiCall(path, getAuthHeaders(), options.query, options),
+  post: (path, body, options = {}) =>
+    postMethodApiCall(path, getAuthHeaders(), body, options.query, options),
+  patch: (path, body, options = {}) =>
+    patchMethodApiCall(path, getAuthHeaders(), body, options),
+  put: (path, body, options = {}) =>
+    putMethodApiCall(path, getAuthHeaders(), body, options),
+  delete: (path, body, options = {}) =>
+    deleteMethodApiCall(path, getAuthHeaders(), body, options),
+};
+
+const ruleEngineApiClient = {
+  get: (path, options = {}) =>
+    getMethodApiCall(path, getAuthHeaders(), options.query, options),
+  post: (path, body, options = {}) =>
+    postMethodApiCall(path, getAuthHeaders(), body, options.query, options),
+  patch: (path, body, options = {}) =>
+    patchMethodApiCall(path, getAuthHeaders(), body, options),
+};
+
+export default function FormBuilderHost() {
+  return (
+    <FormBuilderModule
+      // Optional: defaults to "/form-builder"
+      basePath="/form-builder"
+      // Optional: defaults to "/form-builder"
+      initialPath="/form-builder"
+      formBuilderApiClient={formBuilderApiClient}
+      ruleEngineApiClient={ruleEngineApiClient}
+      ruleEngineComponent={RuleEngineModule}
+    />
+  );
+}
+```
 
 ## CI/CD publish
 
@@ -70,48 +184,13 @@ Then build and deploy the host app as usual.
   - Enable “Allow scripts to access OAuth token” so `$(System.AccessToken)` works.
   - Ensure the feed allows package publish.
 
-## Configuration, auth, and runtime behavior
+## When modules work vs. when they do not
 
-These packages depend on **headers + authentication** to talk to your API.
-If you do not provide them, the modules will not be able to fetch data.
-
-### Form Builder
-
-Two supported modes:
-
-1) **Parent-managed API (recommended)**
-   - Pass `formBuilderApiClient` from the host app.
-   - The client must expose `get`, `post`, `patch`, `put`, `delete` and return
-     the same response shape the package expects (`{ statusCode, data }`).
-   - In this mode the package does **not** set base URL or tokens itself.
-
-2) **Package-managed API (fallback)**
-   - Pass `apiBaseUrl` and `authToken`.
-   - The package writes the token to `localStorage` and uses its internal API client.
-
-If neither is provided, Form Builder renders but API calls will fail.
-
-### Rule Engine
-
-- Optional inside Form Builder. Provide only when needed:
-  - `ruleEngineComponent={RuleEngineModal}`
-- API control:
-  - Parent-managed: pass `ruleEngineApiClient` (same shape as above).
-  - Fallback: package uses `window.__APP_API_BASE__` or `VITE_API_BASE_URL`,
-    and reads `accessToken`/`authToken` from `localStorage`.
-
-If no API client/headers are available, Rule Engine renders but API calls fail.
-
-### When it runs vs. when it does not
-
-- **Runs with API access** when:
+- Works with API access when:
   - `formBuilderApiClient` is provided, or
-  - `apiBaseUrl` + `authToken` are provided, and
-  - Rule Engine is passed when you want that feature.
-
-- **Does not fetch data** when:
-  - No API client and no auth/base URL is provided.
-  - Rule Engine component is not provided (feature hidden).
+  - `apiBaseUrl` + `authToken` are provided.
+- Rule Engine only runs when you pass `ruleEngineComponent`.
+- API calls fail when no API client and no auth/base URL is provided.
 
 ## Styling
 
