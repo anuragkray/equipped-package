@@ -13,27 +13,33 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
+          - checkout: self
           - task: NodeTool@0
             inputs:
               versionSpec: $(nodeVersion)
           - script: |
-              echo "@equipped:registry=$(npmFeedUrl)" > ~/.npmrc
+              echo "@equipped:registry=$(npmFeedUrl)" > $(Build.SourcesDirectory)/.npmrc
+              echo "always-auth=true" >> $(Build.SourcesDirectory)/.npmrc
+              echo "//pkgs.dev.azure.com/<org>/<project>/_packaging/<feed>/npm/registry/:_authToken=$(System.AccessToken)" >> $(Build.SourcesDirectory)/.npmrc
             displayName: Configure npm registry
+          - task: NpmAuthenticate@0
+            inputs:
+              workingFile: $(Build.SourcesDirectory)/.npmrc
           - script: npm install
-            workingDirectory: form-builder
+            workingDirectory: equipped-package/form-builder
             displayName: Install form-builder
           - script: npm run build
-            workingDirectory: form-builder
+            workingDirectory: equipped-package/form-builder
             displayName: Build form-builder
           - script: npm publish
-            workingDirectory: form-builder
+            workingDirectory: equipped-package/form-builder
             displayName: Publish form-builder
           - script: npm install
-            workingDirectory: rule-engine
+            workingDirectory: equipped-package/rule-engine
             displayName: Install rule-engine
           - script: npm run build
-            workingDirectory: rule-engine
+            workingDirectory: equipped-package/rule-engine
             displayName: Build rule-engine
           - script: npm publish
-            workingDirectory: rule-engine
+            workingDirectory: equipped-package/rule-engine
             displayName: Publish rule-engine

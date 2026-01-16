@@ -51,6 +51,25 @@ Publish packages to your registry and install them by version:
 
 Then build and deploy the host app as usual.
 
+## CI/CD publish
+
+### GitHub Packages
+
+- Workflow: `.github/workflows/publish-github-packages.yml`
+- Triggers: `workflow_dispatch` or git tags matching `v*`
+- Requirements:
+  - The package scope `@equipped` must match your GitHub org/user.
+  - `packages:write` permission (uses `GITHUB_TOKEN`).
+  - Workflow runs only when `equipped-package/**` changes or on tag pushes.
+
+### Azure Artifacts
+
+- Pipeline: `equipped-package/azure-pipelines.yml`
+- Requirements:
+  - Replace `<org>/<project>/<feed>` in the file.
+  - Enable “Allow scripts to access OAuth token” so `$(System.AccessToken)` works.
+  - Ensure the feed allows package publish.
+
 ## Configuration, auth, and runtime behavior
 
 These packages depend on **headers + authentication** to talk to your API.
