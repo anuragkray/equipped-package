@@ -24,6 +24,11 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1"
   },
+  "peerDependenciesMeta": {
+    "@equipped/rule-engine": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
     "axios": "^1.7.9",
@@ -31,7 +36,6 @@
     "react-toastify": "^10.0.5"
   },
   "devDependencies": {
-    "@equipped/rule-engine": "file:../rule-engine",
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.22",
     "postcss": "^8.5.6",

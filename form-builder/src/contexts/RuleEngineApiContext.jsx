@@ -1,11 +1,16 @@
 import React, { createContext, useContext } from 'react';
 
-const RuleEngineApiContext = createContext(null);
+const RuleEngineContext = createContext({
+  apiClient: null,
+  RuleEngineModal: null,
+});
 
-export const RuleEngineApiProvider = ({ value, children }) => (
-  <RuleEngineApiContext.Provider value={value ?? null}>
+export const RuleEngineApiProvider = ({ apiClient, RuleEngineModal, children }) => (
+  <RuleEngineContext.Provider value={{ apiClient: apiClient ?? null, RuleEngineModal: RuleEngineModal ?? null }}>
     {children}
-  </RuleEngineApiContext.Provider>
+  </RuleEngineContext.Provider>
 );
 
-export const useRuleEngineApiClient = () => useContext(RuleEngineApiContext);
+export const useRuleEngineApiClient = () => useContext(RuleEngineContext).apiClient;
+
+export const useRuleEngineComponent = () => useContext(RuleEngineContext).RuleEngineModal;

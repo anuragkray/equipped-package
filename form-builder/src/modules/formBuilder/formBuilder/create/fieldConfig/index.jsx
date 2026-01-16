@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { DotsThreeVertical, Check } from "@phosphor-icons/react";
-import RuleEngineModal from "@equipped/rule-engine";
 import { getAuthHeaders, getMethodApiCall } from "../../../../../services/apiClient.js";
 import { alertWarning } from "../../../../../utils/alert.jsx";
-import { useRuleEngineApiClient } from "../../../../../contexts/RuleEngineApiContext.jsx";
+import {
+  useRuleEngineApiClient,
+  useRuleEngineComponent,
+} from "../../../../../contexts/RuleEngineApiContext.jsx";
 import './FieldConfig.css';
 
 const DropdownMenu = ({ children, trigger }) => {
@@ -42,6 +44,7 @@ const DropdownItem = ({ onClick, children }) => (
 
 const FieldConfig = ({ hooksAndValue, group }) => {
   const ruleEngineApiClient = useRuleEngineApiClient();
+  const RuleEngineModal = useRuleEngineComponent();
   let {
     inputKey,
     sectionIndex,
@@ -132,23 +135,25 @@ const FieldConfig = ({ hooksAndValue, group }) => {
           <DropdownItem onClick={handleField}>Properties</DropdownItem>
         )}
         {field?.type === "Lookup" && <DropdownItem onClick={handleField}>Properties</DropdownItem>}
-        {field?.type === "amount" && (
+        {field?.type === "amount" && RuleEngineModal && (
           <DropdownItem onClick={handleRuleEngine}>Rule Engine</DropdownItem>
         )}
       </DropdownMenu>
-      <RuleEngineModal
-        isOpen={ruleModalOpen}
-        onClose={() => setRuleModalOpen(false)}
-        initialData={ruleModalData}
-        group={group}
-        setSections={setSections}
-        sectionIndex={sectionIndex}
-        inputKey={inputKey}
-        subSectionId={subSectionId}
-        parentSubSectionId={parentSubSectionId}
-        currentSections={hooksAndValue.sections}
-        apiClient={ruleEngineApiClient}
-      />
+      {RuleEngineModal && (
+        <RuleEngineModal
+          isOpen={ruleModalOpen}
+          onClose={() => setRuleModalOpen(false)}
+          initialData={ruleModalData}
+          group={group}
+          setSections={setSections}
+          sectionIndex={sectionIndex}
+          inputKey={inputKey}
+          subSectionId={subSectionId}
+          parentSubSectionId={parentSubSectionId}
+          currentSections={hooksAndValue.sections}
+          apiClient={ruleEngineApiClient}
+        />
+      )}
     </>
   );
 };

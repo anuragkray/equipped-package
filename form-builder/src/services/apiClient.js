@@ -20,6 +20,12 @@ const axiosInstance = axios.create({
   baseURL: resolvedBaseURL,
 });
 
+let externalApiClient = null;
+
+export const setExternalApiClient = (client) => {
+  externalApiClient = client || null;
+};
+
 axiosInstance.interceptors.response.use(
   response => response,
   error => {
@@ -94,7 +100,21 @@ const handleResponse = async apiCall => {
   }
 };
 
+const callExternalApi = (method, apiPath, body, query, options) => {
+  if (!externalApiClient || typeof externalApiClient[method] !== 'function') {
+    return null;
+  }
+  if (method === 'get') {
+    return externalApiClient.get(apiPath, { query, ...options });
+  }
+  if (method === 'delete') {
+    return externalApiClient.delete(apiPath, body, { query, ...options });
+  }
+  return externalApiClient[method](apiPath, body, { query, ...options });
+};
+
 export const getMethodApiCall = (apiPath, headers, query = {}, options = {}) =>
+  callExternalApi('get', apiPath, undefined, query, options) ??
   handleResponse(() =>
     axiosInstance.get(buildURL(apiPath, query), {
       headers,
@@ -103,6 +123,7 @@ export const getMethodApiCall = (apiPath, headers, query = {}, options = {}) =>
   );
 
 export const postMethodApiCall = (apiPath, headers, body = {}, query = {}, options = {}) =>
+  callExternalApi('post', apiPath, body, query, options) ??
   handleResponse(() =>
     axiosInstance.post(buildURL(apiPath, query), body, {
       headers,
@@ -111,6 +132,7 @@ export const postMethodApiCall = (apiPath, headers, body = {}, query = {}, optio
   );
 
 export const patchMethodApiCall = (apiPath, headers, body = {}, options = {}) =>
+  callExternalApi('patch', apiPath, body, undefined, options) ??
   handleResponse(() =>
     axiosInstance.patch(buildURL(apiPath), body, {
       headers,
@@ -119,6 +141,7 @@ export const patchMethodApiCall = (apiPath, headers, body = {}, options = {}) =>
   );
 
 export const putMethodApiCall = (apiPath, headers, body = {}, options = {}) =>
+  callExternalApi('put', apiPath, body, undefined, options) ??
   handleResponse(() =>
     axiosInstance.put(buildURL(apiPath), body, {
       headers,
@@ -127,6 +150,7 @@ export const putMethodApiCall = (apiPath, headers, body = {}, options = {}) =>
   );
 
 export const deleteMethodApiCall = (apiPath, headers, body = {}, options = {}) =>
+  callExternalApi('delete', apiPath, body, undefined, options) ??
   handleResponse(() =>
     axiosInstance.delete(buildURL(apiPath), {
       headers,

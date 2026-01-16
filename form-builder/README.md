@@ -35,7 +35,23 @@ import {
   getMethodApiCall,
   postMethodApiCall,
   patchMethodApiCall,
+  putMethodApiCall,
+  deleteMethodApiCall,
 } from 'your-app/services/apiClient';
+import RuleEngineModal from '@equipped/rule-engine';
+
+const formBuilderApiClient = {
+  get: (path, options = {}) =>
+    getMethodApiCall(path, getAuthHeaders(), options.query, options),
+  post: (path, body, options = {}) =>
+    postMethodApiCall(path, getAuthHeaders(), body, options.query, options),
+  patch: (path, body, options = {}) =>
+    patchMethodApiCall(path, getAuthHeaders(), body, options),
+  put: (path, body, options = {}) =>
+    putMethodApiCall(path, getAuthHeaders(), body, options),
+  delete: (path, body, options = {}) =>
+    deleteMethodApiCall(path, getAuthHeaders(), body, options),
+};
 
 const ruleEngineApiClient = {
   get: (path, options = {}) =>
@@ -53,7 +69,9 @@ export default function FormBuilderHost() {
       authToken="<token>"
       initialPath="/form-builder"
       basePath="/form-builder"
+      formBuilderApiClient={formBuilderApiClient}
       ruleEngineApiClient={ruleEngineApiClient}
+      ruleEngineComponent={RuleEngineModal}
     />
   );
 }
@@ -86,4 +104,14 @@ No styles are auto-imported from this package. Apply styles from the host app.
 
 The form builder uses `@equipped/rule-engine` internally. If you need the rule
 engine to use a parent-managed API client, pass `ruleEngineApiClient` to
-`FormBuilderApp` (see Usage above).
+`FormBuilderApp`. To keep the module independent, pass the Rule Engine
+component only when you want the feature:
+
+```jsx
+<FormBuilderApp ruleEngineComponent={RuleEngineModal} />
+```
+
+## Form Builder API control
+
+To keep all API calls in the host app, pass `formBuilderApiClient`. When provided,
+the package will use it for all API calls instead of the internal client.

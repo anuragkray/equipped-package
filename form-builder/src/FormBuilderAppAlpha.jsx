@@ -9,6 +9,7 @@ import {
 import FormBuilderScreen from './modules/formBuilder/FormBuilderScreen.jsx';
 import FormBuilderCreateScreen from './modules/formBuilder/FormBuilderCreateScreen.jsx';
 import { RuleEngineApiProvider } from './contexts/RuleEngineApiContext.jsx';
+import { setExternalApiClient } from './services/apiClient.js';
 
 const normalizePath = (path) => {
   if (!path) return '/form-builder';
@@ -30,7 +31,9 @@ const FormBuilderAppAlpha = ({
   secondaryTokenKey = 'authToken',
   initialPath = '/form-builder',
   basePath = '/form-builder',
+  formBuilderApiClient,
   ruleEngineApiClient,
+  ruleEngineComponent,
 }) => {
   const initialEntry = useMemo(() => normalizePath(initialPath), [initialPath]);
   const resolvedBasePath = useMemo(
@@ -40,22 +43,32 @@ const FormBuilderAppAlpha = ({
   const inRouter = useInRouterContext();
 
   useEffect(() => {
+    if (formBuilderApiClient) {
+      return;
+    }
     if (apiBaseUrl) {
       window.__APP_API_BASE__ = apiBaseUrl;
     }
-  }, [apiBaseUrl]);
+  }, [apiBaseUrl, formBuilderApiClient]);
 
   useEffect(() => {
     window.__FORM_BUILDER_BASE_PATH__ = resolvedBasePath;
   }, [resolvedBasePath]);
 
   useEffect(() => {
+    if (formBuilderApiClient) {
+      return;
+    }
     applyToken(authToken, tokenStorageKey, secondaryTokenKey);
-  }, [authToken, tokenStorageKey, secondaryTokenKey]);
+  }, [authToken, tokenStorageKey, secondaryTokenKey, formBuilderApiClient]);
+
+  useEffect(() => {
+    setExternalApiClient(formBuilderApiClient || null);
+  }, [formBuilderApiClient]);
 
   if (inRouter) {
     return (
-      <RuleEngineApiProvider value={ruleEngineApiClient}>
+      <RuleEngineApiProvider apiClient={ruleEngineApiClient} RuleEngineModal={ruleEngineComponent}>
         <Routes>
           <Route index element={<FormBuilderScreen />} />
           <Route path="create" element={<FormBuilderCreateScreen />} />
@@ -66,7 +79,7 @@ const FormBuilderAppAlpha = ({
   }
 
   return (
-    <RuleEngineApiProvider value={ruleEngineApiClient}>
+    <RuleEngineApiProvider apiClient={ruleEngineApiClient} RuleEngineModal={ruleEngineComponent}>
       <MemoryRouter initialEntries={[initialEntry]}>
         <Routes>
           <Route path={resolvedBasePath} element={<FormBuilderScreen />} />
