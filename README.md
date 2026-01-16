@@ -1,8 +1,8 @@
-# Equipped Packages
+# Equipped UI Packages or Module
 
 This folder contains the shared UI modules used by the main app and other consumers.
 
-## Packages
+## Packages/Module
 
 - `@equipped/form-builder`: Form builder UI and flows.
 - `@equipped/rule-engine`: Rule engine modal and helpers.

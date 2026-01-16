@@ -1,8 +1,0 @@
-.card {
-  padding: 8px;
-  border-radius: 12px;
-  border: 1px solid var(--surface-card-stroke-color, var(--panel-border, #e0e0e0));
-  background-color: var(--panel, #ffffff);
-  color: var(--text, #2c3e50);
-}
-
