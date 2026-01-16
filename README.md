@@ -55,12 +55,12 @@ Then build and deploy the host app as usual.
 
 ### GitHub Packages
 
-- Workflow: `.github/workflows/publish-github-packages.yml`
+- Workflow: `.github/workflows/publish-github-packages.yml` (inside the `equipped-package` repo)
 - Triggers: `workflow_dispatch` or git tags matching `v*`
 - Requirements:
   - The package scope `@equipped` must match your GitHub org/user.
   - `packages:write` permission (uses `GITHUB_TOKEN`).
-  - Workflow runs only when `equipped-package/**` changes or on tag pushes.
+  - This workflow runs from the `equipped-package` repo root.
 
 ### Azure Artifacts
 
