@@ -1,5 +1,5 @@
 import './index.css';
 import './App.css';
-import FormBuilderAppAlpha from './FormBuilderAppAlpha.jsx';
+import FormBuilderModule from './FormBuilderModule.jsx';
 
-export default FormBuilderAppAlpha;
+export default FormBuilderModule;

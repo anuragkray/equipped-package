@@ -44,7 +44,7 @@ const DropdownItem = ({ onClick, children }) => (
 
 const FieldConfig = ({ hooksAndValue, group }) => {
   const ruleEngineApiClient = useRuleEngineApiClient();
-  const RuleEngineModal = useRuleEngineComponent();
+  const RuleEngineModule= useRuleEngineComponent();
   let {
     inputKey,
     sectionIndex,
@@ -135,11 +135,11 @@ const FieldConfig = ({ hooksAndValue, group }) => {
           <DropdownItem onClick={handleField}>Properties</DropdownItem>
         )}
         {field?.type === "Lookup" && <DropdownItem onClick={handleField}>Properties</DropdownItem>}
-        {field?.type === "amount" && RuleEngineModal && (
+        {field?.type === "amount" && RuleEngineModule&& (
           <DropdownItem onClick={handleRuleEngine}>Rule Engine</DropdownItem>
         )}
       </DropdownMenu>
-      {RuleEngineModal && (
+      {RuleEngineModule&& (
         <RuleEngineModal
           isOpen={ruleModalOpen}
           onClose={() => setRuleModalOpen(false)}

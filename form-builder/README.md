@@ -38,7 +38,7 @@ import {
   putMethodApiCall,
   deleteMethodApiCall,
 } from 'your-app/services/apiClient';
-import RuleEngineModal from '@equipped/rule-engine';
+import RuleEngineModule '@equipped/rule-engine';
 
 const formBuilderApiClient = {
   get: (path, options = {}) =>

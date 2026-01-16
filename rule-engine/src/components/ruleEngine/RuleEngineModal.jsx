@@ -10,7 +10,7 @@ import { useSuggestionHandlers } from './hooks/useSuggestionHandlers';
 import { useKeyboardNavigation } from './hooks/useKeyboardNav';
 import './RuleEngineModal.css';
 
-const RuleEngineModal = ({
+const RuleEngineModule= ({
   isOpen,
   onClose,
   initialData,
@@ -182,4 +182,4 @@ const RuleEngineModal = ({
   );
 };
 
-export default RuleEngineModal;
+export default RuleEngineModule;

@@ -27,7 +27,7 @@ Local dev (file deps):
 ## Usage
 
 ```jsx
-import RuleEngineModal from '@equipped/rule-engine';
+import RuleEngineModule '@equipped/rule-engine';
 
 <RuleEngineModal
   isOpen
@@ -66,7 +66,7 @@ const apiClient = {
     patchMethodApiCall(path, getAuthHeaders(), body, options),
 };
 
-<RuleEngineModal apiClient={apiClient} />;
+<RuleEngineModuleapiClient={apiClient} />;
 ```
 
 If `apiClient` is not provided, the package falls back to its internal API client.

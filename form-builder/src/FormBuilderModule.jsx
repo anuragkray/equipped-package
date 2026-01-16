@@ -24,7 +24,7 @@ const applyToken = (token, primaryKey, secondaryKey) => {
   }
 };
 
-const FormBuilderAppAlpha = ({
+const FormBuilderModule = ({
   apiBaseUrl,
   authToken,
   tokenStorageKey = 'accessToken',
@@ -94,4 +94,4 @@ const FormBuilderAppAlpha = ({
   );
 };
 
-export default FormBuilderAppAlpha;
+export default FormBuilderModule;

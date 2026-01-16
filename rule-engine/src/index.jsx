@@ -1,3 +1,3 @@
-import RuleEngineModal from './components/ruleEngine/RuleEngineModal.jsx';
+import RuleEngineModule from './components/ruleEngine/RuleEngineModal.jsx';
 
-export default RuleEngineModal;
+export default RuleEngineModule;
