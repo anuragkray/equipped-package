@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getMethodApiCall, getAuthHeaders } from '../../../services/apiClient';
+import { resolveApiClient } from '../../../services/apiAdapter';
 import { normalizeModuleName } from '../utils/moduleUtils';
 
 export const useRuleEngineInit = ({
@@ -11,7 +11,10 @@ export const useRuleEngineInit = ({
   setError,
   setGroupList,
   resetForm,
+  apiClient,
 }) => {
+  const api = resolveApiClient(apiClient);
+
   useEffect(() => {
     if (isOpen && initialData) {
       setForm({
@@ -23,7 +26,7 @@ export const useRuleEngineInit = ({
 
       (async () => {
         try {
-          const res = await getMethodApiCall('/form/group?offset=1&limit=20', getAuthHeaders());
+          const res = await api.get('/form/group?offset=1&limit=20');
           let list = [];
           if (res?.data?.formData && Array.isArray(res.data.formData)) {
             list = res.data.formData;

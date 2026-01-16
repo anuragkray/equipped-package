@@ -23,6 +23,7 @@ const RuleEngineModal = ({
   showRuleName = true,
   onSave,
   title, // Custom title prop
+  apiClient,
 }) => {
   const formulaRef = useRef(null);
   
@@ -60,6 +61,7 @@ const RuleEngineModal = ({
     setError,
     setGroupList,
     resetForm,
+    apiClient,
   });
 
   // Formula handlers (submit, check syntax)
@@ -84,6 +86,7 @@ const RuleEngineModal = ({
     onSave,
     setFieldError,
     setModuleError,
+    apiClient,
   });
 
   // Suggestion handlers
@@ -97,6 +100,7 @@ const RuleEngineModal = ({
     suggestionState,
     setFieldError,
     setModuleError,
+    apiClient,
   });
 
   // Keyboard navigation

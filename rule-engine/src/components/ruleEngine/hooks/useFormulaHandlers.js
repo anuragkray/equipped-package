@@ -1,9 +1,4 @@
-import { 
-  postMethodApiCall, 
-  getAuthHeaders, 
-  getMethodApiCall,
-  patchMethodApiCall 
-} from '../../../services/apiClient';
+import { resolveApiClient } from '../../../services/apiAdapter';
 import { normalizeModuleName, extractFieldNames } from '../utils/moduleUtils';
 
 export const useFormulaHandlers = ({
@@ -27,7 +22,10 @@ export const useFormulaHandlers = ({
   onSave,
   setFieldError,
   setModuleError,
+  apiClient,
 }) => {
+  const api = resolveApiClient(apiClient);
+
   const handleChange = e => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -37,7 +35,7 @@ export const useFormulaHandlers = ({
     setCheckLoading(true);
     setCheckResult(null);
     try {
-      const res = await postMethodApiCall('/settings/check-formula-syntax', getAuthHeaders(), {
+      const res = await api.post('/settings/check-formula-syntax', {
         formula: form.formula,
         data: {
           Ordered: { Quantity: 3, Price: 1 },
@@ -120,9 +118,8 @@ export const useFormulaHandlers = ({
         
         // 2. Get fields from saved form via API (if exists)
         try {
-          const res = await getMethodApiCall(
+          const res = await api.get(
             `/form/get?offset=1&limit=10&formTitle=${targetModule}`,
-            getAuthHeaders(),
           );
           if (res?.data?.formData && Array.isArray(res.data.formData)) {
             const defaultFormRes = res.data.formData.find(f => f.default === true);
@@ -160,23 +157,19 @@ export const useFormulaHandlers = ({
     try {
       let res;
       if (initialData?.isEdit && initialData?._id) {
-        res = await patchMethodApiCall(
-          `/settings/update-formula/${initialData._id}`,
-          getAuthHeaders(),
-          {
-            formulaTitle: form.formulaTitle,
-            moduleName: group,
-            moduleFilds: initialData?.moduleFilds || '',
-            formula: form.formula,
-          },
-        );
+        res = await api.patch(`/settings/update-formula/${initialData._id}`, {
+          formulaTitle: form.formulaTitle,
+          moduleName: group,
+          moduleFilds: initialData?.moduleFilds || '',
+          formula: form.formula,
+        });
         if (res?.statusCode === 200 || res?.statusCode === 201) {
           onClose();
         } else {
           setError('Failed to update rule.');
         }
       } else {
-        res = await postMethodApiCall('/settings/add-formula', getAuthHeaders(), {
+        res = await api.post('/settings/add-formula', {
           formulaTitle: form.formulaTitle,
           moduleName: group,
           moduleFilds: initialData?.moduleFilds || '',

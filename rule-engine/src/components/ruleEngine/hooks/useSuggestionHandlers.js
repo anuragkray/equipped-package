@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { getMethodApiCall, postMethodApiCall, getAuthHeaders } from '../../../services/apiClient';
+import { resolveApiClient } from '../../../services/apiAdapter';
 import { normalizeModuleName, extractFieldNames, STATIC_MODULES } from '../utils/moduleUtils';
 import {
   ARITHMETIC_OPERATOR_SNIPPETS,
@@ -17,7 +17,9 @@ export const useSuggestionHandlers = ({
   suggestionState,
   setFieldError,
   setModuleError,
+  apiClient,
 }) => {
+  const api = resolveApiClient(apiClient);
   const {
     cursorPos,
     setCursorPos,
@@ -71,14 +73,10 @@ export const useSuggestionHandlers = ({
       return formulaSuggestionCache.current.get(cacheKey);
     }
     try {
-      const res = await postMethodApiCall(
-        '/settings/formula-suggestions',
-        getAuthHeaders(),
-        {
-          query: safeQuery,
-          options: { limit: 20 },
-        },
-      );
+      const res = await api.post('/settings/formula-suggestions', {
+        query: safeQuery,
+        options: { limit: 20 },
+      });
       const snippets = normalizeFormulaSnippets(res?.data?.suggestions);
       formulaSuggestionCache.current.set(cacheKey, snippets);
       return snippets;
@@ -183,9 +181,8 @@ export const useSuggestionHandlers = ({
         }
         
         try {
-          const res = await getMethodApiCall(
+          const res = await api.get(
             `/form/get?offset=1&limit=10&formTitle=${targetModule}`,
-            getAuthHeaders(),
           );
           if (res?.data?.formData && Array.isArray(res.data.formData)) {
             const forms = res.data.formData;

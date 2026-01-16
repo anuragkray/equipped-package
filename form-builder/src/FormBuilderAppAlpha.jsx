@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import FormBuilderScreen from './modules/formBuilder/FormBuilderScreen.jsx';
 import FormBuilderCreateScreen from './modules/formBuilder/FormBuilderCreateScreen.jsx';
+import { RuleEngineApiProvider } from './contexts/RuleEngineApiContext.js';
 
 const normalizePath = (path) => {
   if (!path) return '/form-builder';
@@ -29,6 +30,7 @@ const FormBuilderAppAlpha = ({
   secondaryTokenKey = 'authToken',
   initialPath = '/form-builder',
   basePath = '/form-builder',
+  ruleEngineApiClient,
 }) => {
   const initialEntry = useMemo(() => normalizePath(initialPath), [initialPath]);
   const resolvedBasePath = useMemo(
@@ -53,25 +55,29 @@ const FormBuilderAppAlpha = ({
 
   if (inRouter) {
     return (
-      <Routes>
-        <Route index element={<FormBuilderScreen />} />
-        <Route path="create" element={<FormBuilderCreateScreen />} />
-        <Route path="*" element={<Navigate to="." replace />} />
-      </Routes>
+      <RuleEngineApiProvider value={ruleEngineApiClient}>
+        <Routes>
+          <Route index element={<FormBuilderScreen />} />
+          <Route path="create" element={<FormBuilderCreateScreen />} />
+          <Route path="*" element={<Navigate to="." replace />} />
+        </Routes>
+      </RuleEngineApiProvider>
     );
   }
 
   return (
-    <MemoryRouter initialEntries={[initialEntry]}>
-      <Routes>
-        <Route path={resolvedBasePath} element={<FormBuilderScreen />} />
-        <Route
-          path={`${resolvedBasePath}/create`}
-          element={<FormBuilderCreateScreen />}
-        />
-        <Route path="*" element={<Navigate to={resolvedBasePath} replace />} />
-      </Routes>
-    </MemoryRouter>
+    <RuleEngineApiProvider value={ruleEngineApiClient}>
+      <MemoryRouter initialEntries={[initialEntry]}>
+        <Routes>
+          <Route path={resolvedBasePath} element={<FormBuilderScreen />} />
+          <Route
+            path={`${resolvedBasePath}/create`}
+            element={<FormBuilderCreateScreen />}
+          />
+          <Route path="*" element={<Navigate to={resolvedBasePath} replace />} />
+        </Routes>
+      </MemoryRouter>
+    </RuleEngineApiProvider>
   );
 };
 

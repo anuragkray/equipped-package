@@ -3,6 +3,7 @@ import { DotsThreeVertical, Check } from "@phosphor-icons/react";
 import RuleEngineModal from "@equipped/rule-engine";
 import { getAuthHeaders, getMethodApiCall } from "../../../../../services/apiClient.js";
 import { alertWarning } from "../../../../../utils/alert.jsx";
+import { useRuleEngineApiClient } from "../../../../../contexts/RuleEngineApiContext.js";
 import './FieldConfig.css';
 
 const DropdownMenu = ({ children, trigger }) => {
@@ -40,6 +41,7 @@ const DropdownItem = ({ onClick, children }) => (
 );
 
 const FieldConfig = ({ hooksAndValue, group }) => {
+  const ruleEngineApiClient = useRuleEngineApiClient();
   let {
     inputKey,
     sectionIndex,
@@ -145,6 +147,7 @@ const FieldConfig = ({ hooksAndValue, group }) => {
         subSectionId={subSectionId}
         parentSubSectionId={parentSubSectionId}
         currentSections={hooksAndValue.sections}
+        apiClient={ruleEngineApiClient}
       />
     </>
   );
