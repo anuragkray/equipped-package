@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FormJson } from "./inputlist/data";
 import { genrateUID, generateUniqueInputName } from "../../../../utils/index.js";
 import useParamsValue from "../../../../hooks/useParamsValue.js";
@@ -26,6 +26,7 @@ const FormBuilder = () => {
   const [fromDetail, setFormDetail] = useState({ formTitle: '', formName: '', default: false });
   const { searchParams: { group, formId } } = useParamsValue();
   const { state } = useLocation() || {};
+  const navigate = useNavigate();
   const normalizedGroup = group || 'module';
   const [duplicateField, setDuplicateField] = useState({});
   const [swipeTargetId, setSwipeTargetId] = useState(null);
@@ -135,10 +136,17 @@ const FormBuilder = () => {
           setFormDetail({
             default: formData?.default,
             formTitle: normalizedGroup,
-            formName: formData?.formName || ''
+            formName: formData?.formName || '',
+            moduleLabel: formData?.moduleLabel,
+            moduleIcon: formData?.moduleIcon
           });
           const incomingSections = formData?.sections || FormJson(normalizedGroup)?.sections || [];
           setSections(normaliseSections(incomingSections));
+          const params = new URLSearchParams(window.location.search);
+          if (!params.get("formName") && formData?.formName) {
+            const suffix = `?group=${encodeURIComponent(normalizedGroup)}&formId=${encodeURIComponent(formId)}&formName=${encodeURIComponent(formData.formName)}`;
+            navigate(buildFormBuilderPath(suffix), { replace: true });
+          }
         })
         .catch(err => {
           setFormDetail({ formTitle: normalizedGroup, formName: '' });

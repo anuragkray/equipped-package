@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../../../../components/custom/modal/Modal.jsx";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../../../components/ui/button/Button.jsx";
 import CancelButton from "../../../../../components/ui/button/CancelButton.jsx";
 import { InputField } from "../../../../../components/inputs/input/index.jsx";
@@ -13,12 +13,31 @@ const SaveForm = ({ fromDetail, setFormDetail, sections, group, formId, setDupli
   const [isOpen, setIsOpen] = useState(false);
   const [isDefaultConfirmOpen, setIsDefaultConfirmOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [formNameInput, setFormNameInput] = useState("");
+  const [defaultInput, setDefaultInput] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onClose = () => setIsOpen(false);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const params = new URLSearchParams(location.search);
+    const urlFormName = params.get("formName") || "";
+    if (formId) {
+      setFormNameInput(urlFormName);
+      setDefaultInput(null);
+    } else {
+      setFormNameInput(fromDetail?.formName || "");
+      setDefaultInput(Boolean(fromDetail?.default));
+    }
+  }, [isOpen, formId, fromDetail?.formName, fromDetail?.default, location.search]);
+
   const handleChange = (name, value) => {
     setFormDetail({ ...fromDetail, [name]: value });
+    if (name === "formName") {
+      setFormNameInput(value);
+    }
   };
 
   const handleSave = async () => {
@@ -78,8 +97,13 @@ const SaveForm = ({ fromDetail, setFormDetail, sections, group, formId, setDupli
       updatedSections.push(section);
     }
 
+    const finalFormName = formNameInput.trim() || fromDetail?.formName || "";
+    const finalDefault =
+      defaultInput === null ? Boolean(fromDetail?.default) : defaultInput;
     const payload = {
       ...fromDetail,
+      formName: finalFormName,
+      default: finalDefault,
       formTitle: group,
       sections: updatedSections,
     };
@@ -111,15 +135,19 @@ const SaveForm = ({ fromDetail, setFormDetail, sections, group, formId, setDupli
 
   const handleDefaultToggle = (e) => {
     const { checked } = e.target;
-    if (checked && !fromDetail?.default) {
+    const currentDefault =
+      defaultInput === null ? Boolean(fromDetail?.default) : defaultInput;
+    if (checked && !currentDefault) {
       setIsDefaultConfirmOpen(true);
     } else {
       setFormDetail({ ...fromDetail, default: checked });
+      setDefaultInput(checked);
     }
   };
 
   const confirmSetDefault = () => {
     setFormDetail({ ...fromDetail, default: true });
+    setDefaultInput(true);
     setIsDefaultConfirmOpen(false);
   };
 
@@ -137,7 +165,7 @@ const SaveForm = ({ fromDetail, setFormDetail, sections, group, formId, setDupli
             <InputField
               onChange={(e) => handleChange("formName", e.target.value)}
               name="formName"
-              value={fromDetail?.formName || ""}
+              value={formNameInput}
               placeholder="Enter form name"
             />
           </div>
@@ -149,7 +177,7 @@ const SaveForm = ({ fromDetail, setFormDetail, sections, group, formId, setDupli
                 type="checkbox"
                 onChange={handleDefaultToggle}
                 name="default"
-                checked={fromDetail?.default || false}
+                checked={defaultInput ?? false}
               />
               <span>Set Default</span>
             </label>

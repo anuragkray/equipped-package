@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMethodApiCall, getAuthHeaders } from '../../services/apiClient.js';
-import { getFormGroupApi } from '../../services/formApi.js';
+import { getFormGroupApi, setFormOrganizationId } from '../../services/formApi.js';
 import useParamsValue from '../../hooks/useParamsValue.js';
 import Card from '../../components/custom/card/index.jsx';
 import CreateModuleButton from './formBuilder/components/CreateModuleButton.jsx';
@@ -28,7 +28,7 @@ const normaliseGroups = (input) => {
 
 export default function FormBuilderScreen() {
   const navigate = useNavigate();
-  const { searchParams: { group } } = useParamsValue();
+  const { searchParams: { group, orgId, organizationId } } = useParamsValue();
   const [groups, setGroups] = useState([]);
   const [groupsLoading, setGroupsLoading] = useState(true);
   const [groupsError, setGroupsError] = useState('');
@@ -45,12 +45,19 @@ export default function FormBuilderScreen() {
       return;
     }
 
-    getMethodApiCall('/user/profile', getAuthHeaders()).catch(() => {
-      // ignore profile errors; interceptor will handle 401s if they occur
-    });
+    setFormOrganizationId(orgId || organizationId);
+
+    if (!orgId && !organizationId) {
+      getMethodApiCall('/user/profile', getAuthHeaders()).catch(() => {
+        // ignore profile errors; interceptor will handle 401s if they occur
+      });
+    }
 
     setGroupsLoading(true);
-    getFormGroupApi({ offset: 1, limit: 20 })
+    const listQuery = orgId || organizationId
+      ? { offset: 1, limit: 10 }
+      : { offset: 1, limit: 20 };
+    getFormGroupApi(listQuery)
       .then(response => {
         const payload = response?.data ?? response;
         const normalised = normaliseGroups(payload);
@@ -72,7 +79,7 @@ export default function FormBuilderScreen() {
       .finally(() => {
         setGroupsLoading(false);
       });
-  }, [navigate]);
+  }, [navigate, orgId, organizationId]);
 
   const selectGroup = (g) => {
     navigate(buildFormBuilderPath(`?group=${g}`));

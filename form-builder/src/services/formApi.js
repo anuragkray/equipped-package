@@ -6,15 +6,37 @@ import {
 } from './apiClient.js';
 
 const FORM_BASE = '/form';
+let formOrganizationId = null;
+
+export const setFormOrganizationId = organizationId => {
+  formOrganizationId = organizationId || null;
+};
+
+const withOrganization = path => {
+  if (!formOrganizationId) return path;
+  return `${path}/${encodeURIComponent(formOrganizationId)}`;
+};
 
 export const createFormApi = data =>
-  postMethodApiCall(`${FORM_BASE}/create`, getAuthHeaders(), data);
+  postMethodApiCall(
+    withOrganization(`${FORM_BASE}/create`),
+    getAuthHeaders(),
+    data
+  );
 
 export const getFormApi = query =>
-  getMethodApiCall(`${FORM_BASE}/get`, getAuthHeaders(), query);
+  getMethodApiCall(withOrganization(`${FORM_BASE}/get`), getAuthHeaders(), query);
 
-export const getFormGroupApi = query =>
-  getMethodApiCall(`${FORM_BASE}/group`, getAuthHeaders(), query);
+export const getFormGroupApi = query => {
+  if (formOrganizationId) {
+    return getMethodApiCall(
+      `${FORM_BASE}/group/${encodeURIComponent(formOrganizationId)}`,
+      getAuthHeaders(),
+      query
+    );
+  }
+  return getMethodApiCall(`${FORM_BASE}/group`, getAuthHeaders(), query);
+};
 
 export const getFormByIdApi = id =>
   getMethodApiCall(`${FORM_BASE}/get-by-id/${id}`, getAuthHeaders());
@@ -32,5 +54,9 @@ export const getFormByTitleForFilterApi = formTitle =>
   );
 
 export const updateFormApi = (id, data) =>
-  patchMethodApiCall(`${FORM_BASE}/update/${id}`, getAuthHeaders(), data);
+  patchMethodApiCall(
+    withOrganization(`${FORM_BASE}/update/${id}`),
+    getAuthHeaders(),
+    data
+  );
 

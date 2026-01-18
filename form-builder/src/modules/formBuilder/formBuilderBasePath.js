@@ -7,8 +7,27 @@ export const getFormBuilderBasePath = () => {
 
 export const buildFormBuilderPath = (suffix = '') => {
   const basePath = getFormBuilderBasePath();
-  if (!suffix) return basePath;
-  if (suffix.startsWith('?')) return `${basePath}${suffix}`;
+  const orgParams = (() => {
+    if (typeof window === 'undefined') return '';
+    const params = new URLSearchParams(window.location.search);
+    const orgId = params.get('orgId') || params.get('organizationId');
+    if (!orgId) return '';
+    return `orgId=${encodeURIComponent(orgId)}`;
+  })();
+
+  if (!suffix) {
+    return orgParams ? `${basePath}?${orgParams}` : basePath;
+  }
+
+  if (suffix.startsWith('?')) {
+    if (!orgParams) return `${basePath}${suffix}`;
+    const hasOrg = /(^|[?&])orgId=|(^|[?&])organizationId=/i.test(suffix);
+    return `${basePath}${suffix}${hasOrg ? '' : `&${orgParams}`}`;
+  }
+
   const normalized = suffix.startsWith('/') ? suffix : `/${suffix}`;
-  return `${basePath}${normalized}`;
+  if (!orgParams) return `${basePath}${normalized}`;
+  const joiner = normalized.includes('?') ? '&' : '?';
+  const hasOrg = /(^|[?&])orgId=|(^|[?&])organizationId=/i.test(normalized);
+  return `${basePath}${normalized}${hasOrg ? '' : `${joiner}${orgParams}`}`;
 };

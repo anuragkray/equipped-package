@@ -126,7 +126,9 @@ const FormsByGroup = ({ group, moduleLabel }) => {
                   <div className="form-card-content">
                     <p className="form-card-title">{form?.formName || form?.name || form?.title || key}</p>
                     <Link
-                      to={buildFormBuilderPath(`/create?group=${group}&formId=${form?._id || form?.id}`)}
+                      to={buildFormBuilderPath(
+                        `/create?group=${group}&formId=${form?._id || form?.id}&formName=${encodeURIComponent(form?.formName || form?.name || form?.title || '')}`
+                      )}
                       className="form-edit-link"
                     >
                       <PencilSimple size={20} />

@@ -10,6 +10,7 @@ import FormBuilderScreen from './modules/formBuilder/FormBuilderScreen.jsx';
 import FormBuilderCreateScreen from './modules/formBuilder/FormBuilderCreateScreen.jsx';
 import { RuleEngineApiProvider } from './contexts/RuleEngineApiContext.jsx';
 import { setExternalApiClient } from './services/apiClient.js';
+import { setFormOrganizationId } from './services/formApi.js';
 
 const normalizePath = (path) => {
   if (!path) return '/form-builder';
@@ -29,6 +30,7 @@ const FormBuilderModule = ({
   authToken,
   tokenStorageKey = 'accessToken',
   secondaryTokenKey = 'authToken',
+  organizationId,
   initialPath = '/form-builder',
   basePath = '/form-builder',
   formBuilderApiClient,
@@ -65,6 +67,10 @@ const FormBuilderModule = ({
   useEffect(() => {
     setExternalApiClient(formBuilderApiClient || null);
   }, [formBuilderApiClient]);
+
+  useEffect(() => {
+    setFormOrganizationId(organizationId);
+  }, [organizationId]);
 
   if (inRouter) {
     return (
