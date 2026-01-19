@@ -98,7 +98,7 @@ const FormBuilderPanels = ({
       </div>
       <div className="w-full shadow rounded-md flex gap-3 justify-start p-3 form-builder-main-container">
         {/* Left Panel: Input List */}
-        <div className="flex flex-col min-w-[200px] form-builder-left-panel">
+        <div className="flex flex-col w-[250px] min-w-[250px] shrink-0 form-builder-left-panel">
           <Button onClick={addSection} className="dynamic-module-list-new-btn">
             <Plus size={16} style={{ marginRight: '4px' }} weight="regular" /> Section
           </Button>
@@ -109,7 +109,7 @@ const FormBuilderPanels = ({
         </div>
 
         {/* Right Panel: Sections */}
-        <div className="flex-1 grid gap-1 grid-cols-3 form-builder-sections-container">
+        <div className="flex-1 grid gap-3 grid-cols-2 form-builder-sections-container">
           {sections.map((section, sectionIndex) => (
             <Card className="rounded-md shadow form-builder-section-card" key={section?.id}>
               <div
@@ -119,15 +119,15 @@ const FormBuilderPanels = ({
                 onDragEnd={(e) => handleDragEndSection(e, section)}
               >
                 {/* Section Header */}
-                <div className="flex justify-between items-center gap-4 text-textBrandSecondary font-[400] bg-surfaceControlHeader border-b border-surfaceControlSelected dark:border-0 dark:bg-textBrandSecondary dark:text-[#ffff] px-3 py-2 rounded-t-md section-header-minerva">
+                <div className="flex flex-col gap-2 text-textBrandSecondary font-[400] bg-surfaceControlHeader border-b border-surfaceControlSelected dark:border-0 dark:bg-textBrandSecondary dark:text-[#ffff] px-3 py-2 rounded-t-md section-header-minerva">
                   <InputField
                     value={section.sectionsTitle}
                     placeholder="Section Name"
-                    className="text-sm py-1.5 px-2 rounded-md bg-white/90 border border-gray-200 transition duration-300 ease focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 section-name-input-minerva flex-1"
+                    className="text-sm py-1.5 px-2 rounded-md bg-white/90 border border-gray-200 transition duration-300 ease focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 section-name-input-minerva w-full"
                     onChange={(e) => handleSectionName(e.target.value, sectionIndex)}
                     onBlur={(e) => handleSectionName(e.target.value.trim(), sectionIndex)}
                   />
-                  <div className="flex justify-start items-center gap-2 section-header-actions-minerva flex-shrink-0">
+                  <div className="flex items-center w-full section-header-actions-minerva">
                     <button
                       onClick={() => addSubSection(sectionIndex)}
                       className="flex items-center gap-1.5 text-xs font-bold uppercase px-3 py-1.5 text-white rounded-md shadow-sm hover:shadow-lg transition-all duration-200"
@@ -137,14 +137,16 @@ const FormBuilderPanels = ({
                       <Plus size={14} weight="bold" />
                       <span>Sub-Section</span>
                     </button>
-                    <button
-                      disabled={section?.canRemove === false}
-                      onClick={() => removeSection(section?.id)}
-                      className="section-delete-button-minerva p-1.5 rounded hover:bg-red-100/50 transition-colors"
-                      title="Delete Section"
-                    >
-                      <Trash size={18} weight="bold" className="dark:text-gray-300 text-red-500 hover:text-red-600" />
-                    </button>
+                    <div className="flex-1 flex justify-center">
+                      <button
+                        disabled={section?.canRemove === false}
+                        onClick={() => removeSection(section?.id)}
+                        className="section-delete-button-minerva p-1.5 rounded hover:bg-red-100/50 transition-colors"
+                        title="Delete Section"
+                      >
+                        <Trash size={18} weight="bold" className="dark:text-gray-300 text-red-500 hover:text-red-600" />
+                      </button>
+                    </div>
                     <DotsSixVertical size={20} weight="bold" className="dark:text-gray-300 text-gray-400 cursor-grab section-drag-handle-minerva" />
                   </div>
                 </div>

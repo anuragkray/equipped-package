@@ -23,7 +23,6 @@
 
 .input-list-item:hover {
   border-color: var(--brand, #3498db);
-  background-color: var(--sidebar-selected-bg, #f5f5f5);
 }
 
 .input-list-label {

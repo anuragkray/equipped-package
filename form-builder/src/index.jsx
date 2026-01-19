@@ -1,5 +1,4 @@
-import './index.css';
-import './App.css';
+import './scopedTheme.css';
 import FormBuilderModule from './FormBuilderModule.jsx';
 
 export default FormBuilderModule;

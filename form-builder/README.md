@@ -75,6 +75,97 @@ export default function FormBuilderHost() {
 }
 ```
 
+## Usage by environment
+
+### Standard app (no orgId)
+
+```jsx
+import FormBuilderModule from '@equipped/form-builder';
+import RuleEngineModule from '@equipped/rule-engine';
+import {
+  getAuthHeaders,
+  getMethodApiCall,
+  postMethodApiCall,
+  patchMethodApiCall,
+  putMethodApiCall,
+  deleteMethodApiCall,
+} from './services/apiClient';
+
+const formBuilderApiClient = {
+  get: (path, options = {}) =>
+    getMethodApiCall(path, getAuthHeaders(), options.query, options),
+  post: (path, body, options = {}) =>
+    postMethodApiCall(path, getAuthHeaders(), body, options.query, options),
+  patch: (path, body, options = {}) =>
+    patchMethodApiCall(path, getAuthHeaders(), body, options),
+  put: (path, body, options = {}) =>
+    putMethodApiCall(path, getAuthHeaders(), body, options),
+  delete: (path, body, options = {}) =>
+    deleteMethodApiCall(path, getAuthHeaders(), body, options),
+};
+
+export default function App() {
+  return (
+    <FormBuilderModule
+      formBuilderApiClient={formBuilderApiClient}
+      ruleEngineApiClient={formBuilderApiClient}
+      ruleEngineComponent={RuleEngineModule}
+    />
+  );
+}
+```
+
+### Admin app (orgId + scoped styles)
+
+```jsx
+import FormBuilderModule from '@equipped/form-builder';
+import RuleEngineModule from '@equipped/rule-engine';
+import { useLocation } from 'react-router-dom';
+import {
+  getMethodApiCall,
+  postMethodApiCall,
+  patchMethodApiCall,
+  putMethodApiCall,
+  deleteMethodApiCall,
+} from './services/apiClient';
+
+const getAuthHeaders = () => ({
+  'Content-Type': 'application/json',
+  'x-auth-token': `bearer ${localStorage.getItem('accessToken')}`,
+  Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+});
+
+export default function AdminFormBuilder() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const organizationId = params.get('orgId') || params.get('organizationId') || '';
+
+  const formBuilderApiClient = {
+    get: (path, options = {}) =>
+      getMethodApiCall(path, getAuthHeaders(), options.query, options),
+    post: (path, body, options = {}) =>
+      postMethodApiCall(path, getAuthHeaders(), body, options.query, options),
+    patch: (path, body, options = {}) =>
+      patchMethodApiCall(path, getAuthHeaders(), body, options),
+    put: (path, body, options = {}) =>
+      putMethodApiCall(path, getAuthHeaders(), body, options),
+    delete: (path, body, options = {}) =>
+      deleteMethodApiCall(path, getAuthHeaders(), body, options),
+  };
+
+  return (
+    <FormBuilderModule
+      organizationId={organizationId}
+      formBuilderApiClient={formBuilderApiClient}
+      ruleEngineApiClient={formBuilderApiClient}
+      ruleEngineComponent={RuleEngineModule}
+      disableGlobalStyles
+      wrapperClassName="fb-host-admin"
+    />
+  );
+}
+```
+
 ### Required inputs and settings
 
 - Recommended: pass `formBuilderApiClient` and `ruleEngineApiClient` so the host
@@ -91,8 +182,12 @@ export default function FormBuilderHost() {
 - `authToken`: only if you want package-managed auth
 - `tokenStorageKey`: defaults to `accessToken`
 - `secondaryTokenKey`: defaults to `authToken`
+- `organizationId`: optional; when set, form APIs use org-aware endpoints
 - `initialPath`: optional; defaults to `/form-builder`
 - `basePath`: optional; defaults to `/form-builder`
+- `disableGlobalStyles`: optional; when true, package does not inject global CSS
+- `themeClassName`: optional; pass `"dark"` to force dark theme
+- `wrapperClassName`: optional; extra class on wrapper (use for host-specific styling)
 
 ## Development mode
 
@@ -112,7 +207,24 @@ build then bundles the package sources.
 
 ## Styling
 
-No styles are auto-imported from this package. Apply styles from the host app.
+By default the package ships global styles. You can disable them and scope the
+UI inside `.form-builder-scope` to avoid affecting the host app.
+
+Admin hosts can pass `wrapperClassName="fb-host-admin"` and override styles
+in a targeted way without changing other hosts.
+
+Example:
+
+```jsx
+<FormBuilderModule
+  disableGlobalStyles
+  wrapperClassName="fb-host-admin"
+  themeClassName="dark"
+/>
+```
+
+When `themeClassName` is not provided, the module auto-detects a `dark` class
+on the host `#root` element.
 
 ## Rule Engine API control
 
@@ -161,3 +273,18 @@ patchMethodApiCall(
 Notes:
 - `getAuthHeaders` should include your auth tokens.
 - Return shape should include `{ statusCode, data }`.
+
+## Organization-aware mode (admin)
+
+If `organizationId` is provided, the package switches to org-aware form APIs:
+
+- `GET /form/group/{organizationId}?offset=1&limit=10`
+- `GET /form/get/{organizationId}?offset=1&limit=20&formTitle=...`
+- `POST /form/create/{organizationId}`
+- `PATCH /form/update/{formId}/{organizationId}`
+
+Without `organizationId`, it uses the original endpoints (e.g. `/form/group`,
+`/form/get`, `/form/create`, `/form/update/{id}`).
+
+The module also preserves `orgId` in internal navigation URLs so create/edit
+routes keep the org context.

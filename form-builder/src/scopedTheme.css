@@ -1,0 +1,135 @@
+.form-builder-scope {
+  --bg: #f6f8fb;
+  --bg-2: #f0f2f5;
+  --panel: #ffffff;
+  --panel-border: #e0e0e0;
+  --text: #111111;
+  --muted: #6b7280;
+  --brand: #1a1a1a;
+  --toggle-track: #d1d5db;
+  --toggle-track-dark: #4b5563;
+  color-scheme: light;
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+.form-builder-scope.dark {
+  --bg: #121418;
+  --bg-2: #21262d;
+  --panel: #161b22;
+  --panel-border: #30363d;
+  --text: #e6edf3;
+  --muted: #9aa4b2;
+  --brand: #ffffff;
+  --toggle-track: #4b5563;
+  --toggle-track-dark: #6b7280;
+  color-scheme: dark;
+}
+
+.form-builder-scope.fb-host-admin .form-builder-card {
+  background: var(--panel, #ffffff) !important;
+}
+
+.form-builder-scope.fb-host-admin .dynamic-module-list-new-btn {
+  background: var(--panel, #ffffff) !important;
+  color: var(--text, #111111) !important;
+  border: 1px solid var(--panel-border, #e0e0e0);
+}
+
+.form-builder-scope.fb-host-admin .form-card {
+  background: var(--panel, #ffffff) !important;
+  border: 1px solid var(--panel-border, #e0e0e0) !important;
+}
+
+.form-builder-scope.fb-host-admin .section-header-minerva button[title*="Sub-Section"] {
+  background: var(--panel, #ffffff) !important;
+  color: var(--text, #111111) !important;
+  border: 1px solid var(--panel-border, #e0e0e0);
+}
+
+.form-builder-scope.fb-host-admin .save-button {
+  background: var(--panel, #ffffff) !important;
+  color: var(--text, #111111) !important;
+  border: 1px solid var(--panel-border, #e0e0e0);
+  cursor: pointer;
+}
+
+.form-builder-scope.fb-host-admin button[style*="surface-nav-selected"] {
+  background: var(--panel, #ffffff) !important;
+  color: var(--text, #111111) !important;
+  border: 1px solid var(--panel-border, #e0e0e0);
+  cursor: pointer;
+}
+
+.form-builder-scope.fb-host-admin .save-button:hover,
+.form-builder-scope.fb-host-admin button[style*="surface-nav-selected"]:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.form-builder-scope.fb-host-admin .toggle-switch__slider,
+.form-builder-scope.fb-host-admin .toggle-switch__input:checked + .toggle-switch__slider {
+  background-color: #111111;
+}
+
+.form-builder-scope.fb-host-admin .toggle-switch__slider::after {
+  background-color: #ffffff;
+}
+
+.form-builder-scope.fb-host-admin .toggle-switch-peer,
+.form-builder-scope.fb-host-admin .peer-toggle:checked ~ .toggle-switch-peer {
+  background-color: #111111;
+  border-color: #111111;
+}
+
+.form-builder-scope.fb-host-admin .toggle-switch-peer::after,
+.form-builder-scope.fb-host-admin .peer-toggle:checked ~ .toggle-switch-peer::after {
+  background-color: #ffffff;
+}
+
+.form-builder-scope.fb-host-admin.dark {
+  --dropdown-bg: #1b1f24;
+  --dropdown-border: #30363d;
+  --dropdown-hover: #262b32;
+}
+
+body.fb-host-admin-modal .modal-content {
+  background: var(--panel, #ffffff);
+  color: var(--text, #111111);
+  border: 1px solid var(--panel-border, #e0e0e0);
+}
+
+body.fb-host-admin-modal .modal-title {
+  color: var(--text, #111111);
+}
+
+body.fb-host-admin-modal .modal-close-button {
+  color: var(--text, #111111);
+}
+
+body.fb-host-admin-modal .dynamic-module-list-new-btn,
+body.fb-host-admin-modal .save-button,
+body.fb-host-admin-modal button[style*="surface-nav-selected"] {
+  background: var(--panel, #ffffff) !important;
+  color: var(--text, #111111) !important;
+  border: 1px solid var(--panel-border, #e0e0e0);
+}
+
+body.fb-host-admin-modal {
+  --panel: #ffffff;
+  --panel-border: #e0e0e0;
+  --text: #111111;
+  --muted: #6b7280;
+  --dropdown-bg: #ffffff;
+  --dropdown-border: #e0e0e0;
+  --dropdown-hover: #f4f6f9;
+}
+
+body.fb-host-admin-modal.dark {
+  --panel: #161b22;
+  --panel-border: #30363d;
+  --text: #e6edf3;
+  --muted: #9aa4b2;
+  --dropdown-bg: #1b1f24;
+  --dropdown-border: #30363d;
+  --dropdown-hover: #262b32;
+}

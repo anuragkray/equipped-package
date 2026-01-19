@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   MemoryRouter,
   Navigate,
@@ -11,6 +11,14 @@ import FormBuilderCreateScreen from './modules/formBuilder/FormBuilderCreateScre
 import { RuleEngineApiProvider } from './contexts/RuleEngineApiContext.jsx';
 import { setExternalApiClient } from './services/apiClient.js';
 import { setFormOrganizationId } from './services/formApi.js';
+
+let globalStylesLoaded = false;
+const ensureGlobalStyles = () => {
+  if (globalStylesLoaded) return;
+  globalStylesLoaded = true;
+  import('./index.css');
+  import('./App.css');
+};
 
 const normalizePath = (path) => {
   if (!path) return '/form-builder';
@@ -31,12 +39,16 @@ const FormBuilderModule = ({
   tokenStorageKey = 'accessToken',
   secondaryTokenKey = 'authToken',
   organizationId,
+  disableGlobalStyles = false,
+  themeClassName,
+  wrapperClassName,
   initialPath = '/form-builder',
   basePath = '/form-builder',
   formBuilderApiClient,
   ruleEngineApiClient,
   ruleEngineComponent,
 }) => {
+  const [resolvedThemeClass, setResolvedThemeClass] = useState('');
   const initialEntry = useMemo(() => normalizePath(initialPath), [initialPath]);
   const resolvedBasePath = useMemo(
     () => normalizePath(basePath).replace(/\/+$/, '') || '/form-builder',
@@ -72,31 +84,91 @@ const FormBuilderModule = ({
     setFormOrganizationId(organizationId);
   }, [organizationId]);
 
+  useEffect(() => {
+    if (disableGlobalStyles) return;
+    ensureGlobalStyles();
+  }, [disableGlobalStyles]);
+
+  useEffect(() => {
+    if (!wrapperClassName || typeof document === 'undefined') return;
+    const className = 'fb-host-admin-modal';
+    const darkClassName = 'dark';
+    const rootEl = document.getElementById('root') || document.documentElement;
+    const syncBodyTheme = () => {
+      const isDark = rootEl?.classList?.contains('dark');
+      if (isDark) {
+        document.body.classList.add(darkClassName);
+      } else {
+        document.body.classList.remove(darkClassName);
+      }
+    };
+    if (wrapperClassName.includes('fb-host-admin')) {
+      document.body.classList.add(className);
+      syncBodyTheme();
+      const observer = new MutationObserver(syncBodyTheme);
+      observer.observe(rootEl, { attributes: true, attributeFilter: ['class'] });
+      return () => {
+        document.body.classList.remove(className);
+        document.body.classList.remove(darkClassName);
+        observer.disconnect();
+      };
+    }
+    return undefined;
+  }, [wrapperClassName]);
+
+  useEffect(() => {
+    if (themeClassName !== undefined && themeClassName !== null) {
+      setResolvedThemeClass(themeClassName);
+      return;
+    }
+    const rootEl = document.getElementById('root') || document.documentElement;
+    const updateTheme = () => {
+      const isDark = rootEl?.classList?.contains('dark');
+      setResolvedThemeClass(isDark ? 'dark' : '');
+    };
+    updateTheme();
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(rootEl, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, [themeClassName]);
+
+  const wrapperClass = [
+    'form-builder-scope',
+    resolvedThemeClass,
+    wrapperClassName,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   if (inRouter) {
     return (
-      <RuleEngineApiProvider apiClient={ruleEngineApiClient} RuleEngineModal={ruleEngineComponent}>
-        <Routes>
-          <Route index element={<FormBuilderScreen />} />
-          <Route path="create" element={<FormBuilderCreateScreen />} />
-          <Route path="*" element={<Navigate to="." replace />} />
-        </Routes>
-      </RuleEngineApiProvider>
+      <div className={wrapperClass}>
+        <RuleEngineApiProvider apiClient={ruleEngineApiClient} RuleEngineModal={ruleEngineComponent}>
+          <Routes>
+            <Route index element={<FormBuilderScreen />} />
+            <Route path="create" element={<FormBuilderCreateScreen />} />
+            <Route path="*" element={<Navigate to="." replace />} />
+          </Routes>
+        </RuleEngineApiProvider>
+      </div>
     );
   }
 
   return (
-    <RuleEngineApiProvider apiClient={ruleEngineApiClient} RuleEngineModal={ruleEngineComponent}>
-      <MemoryRouter initialEntries={[initialEntry]}>
-        <Routes>
-          <Route path={resolvedBasePath} element={<FormBuilderScreen />} />
-          <Route
-            path={`${resolvedBasePath}/create`}
-            element={<FormBuilderCreateScreen />}
-          />
-          <Route path="*" element={<Navigate to={resolvedBasePath} replace />} />
-        </Routes>
-      </MemoryRouter>
-    </RuleEngineApiProvider>
+    <div className={wrapperClass}>
+      <RuleEngineApiProvider apiClient={ruleEngineApiClient} RuleEngineModal={ruleEngineComponent}>
+        <MemoryRouter initialEntries={[initialEntry]}>
+          <Routes>
+            <Route path={resolvedBasePath} element={<FormBuilderScreen />} />
+            <Route
+              path={`${resolvedBasePath}/create`}
+              element={<FormBuilderCreateScreen />}
+            />
+            <Route path="*" element={<Navigate to={resolvedBasePath} replace />} />
+          </Routes>
+        </MemoryRouter>
+      </RuleEngineApiProvider>
+    </div>
   );
 };
 

@@ -85,7 +85,9 @@
 .form-builder-left-panel {
   display: flex;
   flex-direction: column;
-  min-width: 200px;
+  min-width: 250px;
+  width: 250px;
+  flex-shrink: 0;
 }
 
 .flex-col {
@@ -94,6 +96,10 @@
 
 .min-w-\[200px\] {
   min-width: 200px;
+}
+
+.min-w-\[250px\] {
+  min-width: 250px;
 }
 
 .cursor-pointer {
